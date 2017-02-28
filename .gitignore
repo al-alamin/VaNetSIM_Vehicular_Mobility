@@ -5,3 +5,5 @@ logs
 /bin/
 backup
 alamin
+debug
+.settings

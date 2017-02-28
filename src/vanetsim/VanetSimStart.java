@@ -7,15 +7,20 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Properties;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import org.jvnet.substance.SubstanceLookAndFeel;
 
+import log.custom.LogVehicleData;
 import vanetsim.gui.DrawingArea;
 import vanetsim.gui.Renderer;
 import vanetsim.gui.controlpanels.MainControlPanel;
@@ -24,6 +29,7 @@ import vanetsim.gui.helpers.ProgressOverlay;
 import vanetsim.gui.helpers.ReRenderManager;
 import vanetsim.localization.Messages;
 import vanetsim.map.Map;
+import vanetsim.scenario.Scenario;
 import vanetsim.simulation.SimulationMaster;
 
 /**
@@ -63,6 +69,36 @@ public final class VanetSimStart implements Runnable {
 		mainFrame_ = new JFrame();
 		mainFrame_.setTitle(Messages.getString("StartGUI.applicationtitle")); //$NON-NLS-1$
 		mainFrame_.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		/*
+		 * edited alamin
+		 * This part of code is added to make sure when the gui of the simulator is closed by clicking the 
+		 * closed sign.
+		 * This this part of code will log the final output to the simulator
+		 * 
+		 */
+		mainFrame_.addWindowListener(new WindowListener() {            
+		    @Override
+		    public void windowOpened(WindowEvent e) {
+		        // TODO Load all data here      
+		    	System.out.println("Window is opening and initiating file writer");
+		    	LogVehicleData.initialFileWriter("logs/vehicle_street_log.txt");
+		    }
+		    @Override public void windowClosing(WindowEvent e) {
+		        // TODO Save the data
+		    	System.out.println("before exiting the window and closing filewriter");
+		    	LogVehicleData.closeFileWriter();
+		    	
+		    }
+
+		    @Override public void windowIconified(WindowEvent e) {}            
+		    @Override public void windowDeiconified(WindowEvent e) {}            
+		    @Override public void windowDeactivated(WindowEvent e) {}            
+		    @Override public void windowActivated(WindowEvent e) {}
+		    @Override public void windowClosed(WindowEvent e) {}
+		});
+		
+		
 
 		progressBar_ = new ProgressOverlay();
 		if(Runtime.getRuntime().maxMemory() < 120000000) ErrorLog.log(Messages.getString("StartGUI.detectedLowMemory"), 6, VanetSimStart.class.getName(), "run", null); //$NON-NLS-1$ //$NON-NLS-2$
@@ -87,6 +123,38 @@ public final class VanetSimStart implements Runnable {
 		ReRenderManager.getInstance().start();
 		MouseClickManager.getInstance().setDrawArea(drawarea);
 		MouseClickManager.getInstance().start();
+		
+		System.out.println("In vanetsim starter method");
+		System.out.println("About to automatically load map");
+		Runnable job1 = new Runnable() {
+			public void run() {
+				File f = new File("debug/map.xml");
+				if(f.exists()){
+					Map.getInstance().load(f, false);
+					Map MAP = Map.getInstance();
+					System.out.println("map has been loaded");
+					System.out.println("MAP width: " + MAP.getMapWidth());
+					System.out.println("Map height: " + MAP.getMapHeight());
+					
+				} else{
+					System.out.println("cant auto load map because map.xml doesnot exist");
+//					Map.getInstance().load(f, false);
+				}
+				
+			}
+		};
+		new Thread(job1).start();
+		
+		
+	 
+//		Runnable job = new Runnable() {
+//			public void run() {
+//				File f = new File("scenerio.xml");
+//				Scenario.getInstance().load(f, false);
+//			}
+//		};
+//		new Thread(job).start();
+		
 	}
 
 	/**
@@ -214,4 +282,6 @@ public final class VanetSimStart implements Runnable {
 		}
 	}
 
+  
+	
 }
