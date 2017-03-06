@@ -22,7 +22,7 @@ int main(){
 
     // This line is for debuging with the sir's analytical parameter.
     // Comment out this line later
-	a = 36; b= 36; Sx=.24; Sy=.24; fi=.4; lamda=50;
+//	a = 36; b= 36; Sx=.24; Sy=.24; fi=.4; lamda=50;
 
 	float Na = (a/Sx) + 1;
 	float Ns = (b/Sy) + 1;
@@ -60,20 +60,26 @@ int main(){
     float ECx, ECy;
     float r = .5; //KM
 
-    float m = sqrt(a) - 2 * (sqrt(2) -1) * r / (2*r);
-    float n = sqrt(b) - 2 * (sqrt(2) -1) * r / (2*r);
-    K = a / (m * Sx);
+//    b = 24;
+////    Na = 151;
+//    Ns = 101;
+    float m = (sqrt(2) * a - 2 * (sqrt(2) -1) * r) / (2*r);
+    float n = (sqrt(2) * b - 2 * (sqrt(2) -1) * r) / (2*r);
 
-    ECx = m * (m+1) * K * (6*Na - 4*m*K + K +3)/ (6 * Na *Na);
-    ECx = n * (n+1) * K * (6*Ns - 4*n*K + K +3)/ (6 * Ns *Ns);
+//    cout << "m is : " << m << endl;
+
+    K = a / (m * Sx);
+//    cout << "K is : " << K << endl;
+    ECx = ((m * (m+1) * K) * (6*Na - 4*m*K + K +3))/ (6 * Na *Na);
+    ECy = ((n * (n+1) * K) * (6*Ns - 4*n*K + K +3))/ (6 * Ns *Ns);
 
     float Ec = ECx + ECy;
 
     cout << "E(C): " << Ec << endl;
 
-    float Tr = ET/Ec;
+    float Tr = ET * 60/Ec;
 
-    cout << "Tr: " << Tr << endl;
+    cout << "Tr(sec): " << Tr << endl;
 
 
     cout << "over" << endl;
