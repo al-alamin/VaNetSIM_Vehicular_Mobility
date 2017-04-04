@@ -5,7 +5,6 @@ logs
 /bin/
 backup
 alamin
-debug
 .settings
 *.o
 *.exe

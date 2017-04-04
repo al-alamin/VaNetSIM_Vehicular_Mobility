@@ -1,0 +1,10 @@
+1
+
+
+
+
+
+
+
+####
+First input is for debug 1 means true so auto load the map and just click on load map to auto load scenerio

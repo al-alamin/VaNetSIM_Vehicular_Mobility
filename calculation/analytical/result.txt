@@ -1,5 +1,0 @@
-Area 4KM * 24 KM
-EL is: 4.75989
-VL is: 6.63333
-Txrod 0
-Ex is : 5.12489 min
